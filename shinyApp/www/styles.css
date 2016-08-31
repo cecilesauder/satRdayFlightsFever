@@ -36,13 +36,13 @@ h1, h2, h3, h4 { font-weight: 400;
   padding: 0 20px 20px 20px;
   cursor: move;
   /* Fade out while not hovering */
-  opacity: 0.65;
+  /*opacity: 0.65;*/
   zoom: 0.9;
   transition: opacity 500ms 1s;
 }
 #controls:hover {
   /* Fade in while hovering */
-  opacity: 0.95;
+  /* opacity: 0.95; */
   transition-delay: 0;
 }
 
@@ -59,11 +59,11 @@ h1, h2, h3, h4 { font-weight: 400;
   background-color: white !important;
 }
 
-#map_flights_count{
+#map_flights_count, #map_passengers_count {
   font-weight: bold;
 }
 
-#map_flights_count_details{
+#map_flights_count_details, #map_passengers_count_details {
   font-weight: bold ;
   font-size: small ;
 }
