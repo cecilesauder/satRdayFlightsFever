@@ -48,7 +48,17 @@ shinyUI(fluidPage(
                       plotOutput("plot")                      
              ),
              tabPanel("Interactive map",
-                      div( class = "outer", leafletOutput("map", height = "100%") )
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput("groupVmap", label = "Select Variable(s) to group by :", 
+                                    c("None", names(flights)), selected = "None", multiple = TRUE),
+                          submitButton("SUBMIT")
+                        ),
+                        
+                          div( class = "outer", leafletOutput("map", height = "100%") )
+                        
+                      )
+                      
              )
   )
 )
