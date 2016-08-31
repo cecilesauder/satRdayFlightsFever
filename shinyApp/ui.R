@@ -5,6 +5,8 @@ geocode<-dismo::geocode
 library(budflights)
 library(leaflet)
 
+nmonths <- nrow(distinct(flights, year, month))
+
 shinyUI(fluidPage(
   includeCSS("www/styles.css"),
   navbarPage("SatRday flights fever",
@@ -106,13 +108,28 @@ shinyUI(fluidPage(
              absolutePanel(
                id = "controls", class = "panel panel-default", fixed = TRUE,
                draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
-               width = 330, height = "auto",
-                       
+               width = 400, height = "auto",
+                      
+               h4("summary data"), 
+               
                textOutput("map_flights_count"), 
                textOutput("map_flights_count_details"),
-               hr(), 
-               textOutput("map_flights_city_country")
-             )
+               br(), 
+               textOutput("map_flights_city_country"), 
+               
+               h4("seasonnality (passengers)"), 
+               plotOutput("map_seasonnality_plot"), 
+               
+               textOutput("map_slider_info"),
+               
+               h3(textOutput("map_slider_text")), 
+               sliderInput("map_slider", label = "",
+                           min = 1, max = nmonths , 
+                           value = 1,  step = 1, ticks = FALSE, 
+                           width = "100%"
+               )
+            )
+            
         )
               
      )
