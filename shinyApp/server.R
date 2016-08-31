@@ -6,7 +6,25 @@ library(budflights)
 library(leaflet)
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
+  
+  
+  explorer_city <- reactive({
+    countries <- input$country
+    data <- if( "All countries" %in% countries ){
+      unique( cities$city )
+    } else {
+      cities %>% 
+        filter( country %in% countries ) %$%
+        city %>%
+        unique
+    }
+    c( "All cities", data )
+  })
+  
+  observe({
+    updateSelectInput(session, "city", choices = explorer_city(), selected =  "All cities" )
+  })
   
   # the table to display on the data explorer tab. 
   # the ui is only updated when the submit button for this tab is clicked
@@ -20,6 +38,7 @@ shinyServer(function(input, output) {
         data <- data %>%
           filter(country %in% input$country)
       }
+      cities <- explorer_city()
       if (!identical(input$city, "All cities")) {
         data <- data %>%
           filter(city %in% input$city)

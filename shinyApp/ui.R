@@ -14,9 +14,11 @@ shinyUI(fluidPage(
           sidebarPanel(
             titlePanel("Filter data"),
             selectInput("country", label=NULL,
-                        c("All countries", unique(as.character(flights$country))),selected="All countries", multiple=TRUE),
+                        c("All countries", unique(as.character(flights$country))),
+                        selected="All countries", multiple=TRUE),
             selectInput("city", label=NULL,
-                        c("All cities", unique(as.character(flights$city))),selected="All cities", multiple=TRUE),
+                        c("All cities", unique(as.character(flights$city))),
+                        selected="All cities", multiple=TRUE),
             selectInput("direction", label=NULL,
                         c("All directions", unique(as.character(flights$direction))),selected="All directions", multiple=FALSE),
             selectInput("year",label=NULL,
@@ -30,6 +32,9 @@ shinyUI(fluidPage(
           )
         )
      ),
+     
+     
+     
      tabPanel("Summary",
         sidebarLayout(
           sidebarPanel(
@@ -43,9 +48,13 @@ shinyUI(fluidPage(
         )
               
      ),
+     
+     
      tabPanel("Plot", 
         plotOutput("plot")                      
      ),
+     
+     
      tabPanel("Interactive map",
         div( class = "outer", 
              leafletOutput("map", height = "100%"), 
