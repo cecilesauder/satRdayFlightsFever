@@ -91,14 +91,48 @@ shinyServer(function(input, output, session) {
   output$tabSummary <- DT::renderDataTable(DT::datatable(summary_table(), rownames = FALSE))
 
   #plot
+  countryPlot <- reactive({
+    input$plot_button
+    
+    isolate({
+      countries<-input$selectCountry
+      df<-flights %>%
+        filter(country %in% countries) %>%
+        group_by(country) %>%
+        summarise(Passengers = sum(passengers), nflights= sum(flights), 
+                  Seats=sum(capacity), weight=sum(weight),
+                  Incoming = sum(flights[direction=="Incoming"]), 
+                  Outgoing = sum(flights[direction=="Outgoing"])) %>%
+        arrange( desc(nflights))
+      df
+    })
+  })
+##############PLOT###################################################################################  
   output$plot <- renderGvis({
-    df<-flights %>%
-      group_by(country) %>%
-      summarise(npassengers = sum(passengers), nflights= sum(flights), 
-                capacity=sum(capacity), weight=sum(weight)) %>%
-      arrange( desc(nflights)) %>%
-      head(n=5)
-    # %>%
+    df<-countryPlot()
+    df<-df %>% select(country, Passengers, Seats)
+    Bar<-gvisBarChart(df,
+                      options=list(
+                      title="Number of passengers and seats by country"
+                      )
+                      )
+    Bar
+    #plot(Bar)
+  })
+  
+  
+  output$plot2 <- renderGvis({
+    df<-countryPlot()
+    df<-df %>% 
+       select(country, Incoming, Outgoing)
+      
+    #   flights %>%
+    #   group_by(country) %>%
+    #   summarise(npassengers = sum(passengers), nflights= sum(flights), 
+    #             capacity=sum(capacity), weight=sum(weight)) %>%
+    #   arrange( desc(nflights)) %>%
+    #   head(n=5)
+    # # %>%
     #   mutate(filling_rate = npassengers/capacity) %>%
     #   select(country, direction, npassengers)
     # df
@@ -109,11 +143,15 @@ shinyServer(function(input, output, session) {
     #   arrange( desc(npassInc)) %>%
     #   head(n=5)
     # 
-    Bar<-gvisBarChart(df)
+    Bar<-gvisBarChart(df,                     
+                      options=list(
+                      title="Number incoming and outgoing flights by country"
+    ))
     Bar
     #plot(Bar)
   })
   
+##########################################################################################################"  
   # Create the map
   output$map <- renderLeaflet({
     m<-leaflet() %>%
