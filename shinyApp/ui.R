@@ -25,9 +25,10 @@ shinyUI(fluidPage(
 ######################################################################################################     
              
      tabPanel("Data explorer",
+              h3("Filter and select data"), br(),
               wellPanel(
               fluidRow(
-                h3("Filter and select data"),
+                
                 column(3, 
                               
             selectInput("country", label=NULL,
@@ -88,28 +89,44 @@ shinyUI(fluidPage(
      ),
      
 ######################################################################################################     
-     
-     tabPanel("Plot", 
-              h3("By country - plot"),
-              wellPanel(
+     navbarMenu("Plot",
+       tabPanel("Saisonality", 
+                h3("Saisonality plot (passengers)"),
                 fluidRow(
-                  column(5,
-                         
-                         selectInput("selectCountry", label = "Select countries to display :", 
-                                     c(unique(flights$country)), selected = country5, multiple = TRUE)
-                         
-                  ),
-                  column(4, ""),
-                  column(3,
-                         br(),
-                         actionButton("plot_button", label = "SUBMIT")
-                  )
+                  plotOutput("map_seasonnality_plot",
+                             width= "100%")
                 )
-              ),
-              htmlOutput("plot"),
-              br(),
-              htmlOutput("plot2")
-
+                ),
+       tabPanel("By country",
+                h3("By country plot"),
+                wellPanel(
+                  fluidRow(
+                    column(5,
+                           
+                           selectInput("selectCountry", label = "Select countries to display :", 
+                                       c(unique(flights$country)), selected = country5, multiple = TRUE)
+                           
+                    ),
+                    column(5, 
+                           
+                           sliderInput("plot_slider", label = "",  
+                                       min=min_date, max = max_date, 
+                                       value=c(min_date, max_date), 
+                                       width= "100%", timeFormat = c( "%b %Y")
+                           )
+                           
+                    ),
+                    column(2,
+                           br(), br(),
+                           actionButton("plot_button", label = "SUBMIT")
+                    )
+                  )
+                ),
+                htmlOutput("plot"),
+                br(),
+                htmlOutput("plot2")
+                
+       )
      ),
      
 ######################################################################################################     
@@ -123,7 +140,7 @@ shinyUI(fluidPage(
                draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
                width = 500, height = "auto",
                       
-               h4("summary data"), 
+               h3("Summary data"), 
                
                textOutput("map_flights_count"), 
                textOutput("map_flights_count_details"),
@@ -135,7 +152,7 @@ shinyUI(fluidPage(
                hr(),
                br(),
                
-               # h4("seasonnality (passengers)"), 
+               # h3("seasonnality (passengers)"), 
                # plotOutput("map_seasonnality_plot"), 
                # textOutput("map_slider_info")
                

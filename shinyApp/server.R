@@ -93,11 +93,18 @@ shinyServer(function(input, output, session) {
   #plot
   countryPlot <- reactive({
     input$plot_button
+
     
     isolate({
       countries<-input$selectCountry
+      date_range <- input$plot_slider
+      date_year  <- as.numeric(substr( date_range, 1, 4))
+      date_month <- as.numeric(substr( date_range, 6, 7))
       df<-flights %>%
-        filter(country %in% countries) %>%
+        filter(country %in% countries,
+                 year > date_year[1] | ( year == date_year[1] & month >= date_month[1] ), 
+                 year < date_year[2] | ( year == date_year[1] & month <= date_month[2] )
+               ) %>%
         group_by(country) %>%
         summarise(Passengers = sum(passengers), nflights= sum(flights), 
                   Seats=sum(capacity), weight=sum(weight),
@@ -238,7 +245,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$map_seasonnality_plot <- renderPlot({
-    data <- dataInBounds() %>%
+    data <- flights %>%
       group_by(year, month) %>%
       summarise( passengers = sum(passengers) )
   
@@ -253,8 +260,9 @@ shinyServer(function(input, output, session) {
       d <- filter(data, year == years[i])
       lines( d$month, d$passengers, col = colors[i], lwd = 3 )
     }
+    legend("topleft", legend=2007:2012,  col=colors[1:6], lwd=rep(2,6))
     
-  }, width = 350, height = 350)
+  })
   
   map_table <- reactive({
     data <- dataInBounds() %>%
