@@ -4,6 +4,14 @@ library(dplyr)
 geocode<-dismo::geocode
 library(budflights)
 library(leaflet)
+library(magrittr)
+
+country5<-flights %>%
+    group_by(country) %>%
+    summarise(npassengers = sum(passengers), nflights= sum(flights),
+              capacity=sum(capacity), weight=sum(weight)) %>%
+    arrange( desc(nflights)) %>%
+    head(n=5) %$% country
 
 nmonths <- nrow(distinct(flights, year, month))
 min_date <- as.Date( "2007/01/01" )
@@ -86,8 +94,9 @@ shinyUI(fluidPage(
               wellPanel(
                 fluidRow(
                   column(5,
-                         selectInput("groupV", label = "Select countries to display :", 
-                                     c("None", unique(flights$country)), selected = "None", multiple = TRUE)
+                         
+                         selectInput("selectCountry", label = "Select countries to display :", 
+                                     c(unique(flights$country)), selected = country5, multiple = TRUE)
                          
                   ),
                   column(4, ""),
@@ -97,9 +106,10 @@ shinyUI(fluidPage(
                   )
                 )
               ),
-              htmlOutput("plot")
-              
-                              
+              htmlOutput("plot"),
+              br(),
+              htmlOutput("plot2")
+
      ),
      
 ######################################################################################################     
