@@ -114,24 +114,44 @@ shinyServer(function(input, output, session) {
     #plot(Bar)
   })
   
-  # Create the map
-  output$map <- renderLeaflet({
-    m<-leaflet() %>%
-      addTiles( ) %>%
-      addCircles(cities$longitude, cities$latitude, popup=paste(cities$city, cities$country, sep=", "))
-    m
-  })
-  
   dataInBounds <- reactive({
     bounds <- input$map_bounds 
+    print(bounds)
+    
+    date_range <- input$map_slider
+    date_year  <- as.numeric(substr( date_range, 1, 4))
+    date_month <- as.numeric(substr( date_range, 6, 7))
+    
     data <- left_join( flights, cities, by = c("country", "city") )
     if( is.null(bounds) ){
       data
     } else {
       data %>% 
-        filter( xmin > bounds$west, xmax < bounds$east, ymin > bounds$south, ymax < bounds$north)
+        filter( 
+          xmin > bounds$west, xmax < bounds$east, ymin > bounds$south, ymax < bounds$north,
+          year > date_year[1] | ( year == date_year[1] & month >= date_month[1] ), 
+          year < date_year[2] | ( year == date_year[1] & month <= date_month[2] )
+        )
     }
   })
+  
+  
+  # Create the map
+  output$map <- renderLeaflet({
+    # data <- dataInBounds() %>%
+    #   group_by( country, city ) %>%
+    #   summarise( passengers = sum(passengers), longitude = first(longitude), latitude = first(latitude))
+    #   
+    m <- leaflet() %>%
+      addTiles( ) %>%
+      addCircles(cities$longitude, cities$latitude, popup=paste(cities$city, cities$country, sep=", ")) 
+    
+    # if( !is.null(data) ) 
+    #   m <- m %>%
+    #     addCircles(data$longitude, data$latitude, popup=paste(data$city, data$country, sep=", ") )
+    m
+  })
+  
   
   output$map_flights_count <- renderText({
     data <- dataInBounds()
@@ -152,6 +172,7 @@ shinyServer(function(input, output, session) {
   
   output$map_flights_city_country <- renderText({
     data <- dataInBounds()
+    
     cities_in_bounds <- unique( data$city )
     countries_in_bounds <- unique( data$country )
     
@@ -179,16 +200,5 @@ shinyServer(function(input, output, session) {
     }
     
   }, width = 350, height = 350)
-  
-  map_slider_month <- reactive({
-    value <-  as.numeric(input$map_slider)
-    year <- dates[ value, "year"]
-    month <- month.abb[ dates[value, "month"] ]
-    
-    paste( month, year)
-  })
-  
-  output$map_slider_text <- renderText(map_slider_month())
-  
   
 })

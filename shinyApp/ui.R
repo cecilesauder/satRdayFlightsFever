@@ -6,6 +6,9 @@ library(budflights)
 library(leaflet)
 
 nmonths <- nrow(distinct(flights, year, month))
+min_date <- as.Date( "2007/01/01" )
+max_date <- as.Date( "2012/06/01" )
+
 
 shinyUI(fluidPage(
   includeCSS("www/styles.css"),
@@ -94,13 +97,13 @@ shinyUI(fluidPage(
                   )
                 )
               ),
-              
-                htmlOutput("plot")
+              htmlOutput("plot")
               
                               
      ),
      
 ######################################################################################################     
+     
      tabPanel("Interactive map",
         div( class = "outer", 
              leafletOutput("map", height = "100%"), 
@@ -115,19 +118,23 @@ shinyUI(fluidPage(
                textOutput("map_flights_count"), 
                textOutput("map_flights_count_details"),
                br(), 
-               textOutput("map_flights_city_country"), 
+               textOutput("map_flights_city_country")
                
-               h4("seasonnality (passengers)"), 
-               plotOutput("map_seasonnality_plot"), 
+               # h4("seasonnality (passengers)"), 
+               # plotOutput("map_seasonnality_plot"), 
+               # textOutput("map_slider_info")
                
-               textOutput("map_slider_info"),
-               
-               h3(textOutput("map_slider_text")), 
-               sliderInput("map_slider", label = "",
-                           min = 1, max = nmonths , 
-                           value = 1,  step = 1, ticks = FALSE, 
-                           width = "100%"
-               )
+            ), 
+            
+            
+            absolutePanel(id="map_slider_panel", fixed = TRUE, bottom = 20, left=20, right=20, width="auto", 
+                          draggable = TRUE, 
+                          
+                          sliderInput("map_slider", label = "",  
+                                      min=min_date, max = max_date, 
+                                      value=c(min_date, max_date), 
+                                      width= "100%", timeFormat = c( "%B %Y")
+                          )
             )
             
         )
