@@ -68,3 +68,7 @@ h1, h2, h3, h4 { font-weight: 400; }
 #map_flights_city_country{
   font-weight: bold;
 }
+
+#irs-single{ 
+  visibility: hidden ;
+}

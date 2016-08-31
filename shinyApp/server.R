@@ -5,6 +5,7 @@ geocode<-dismo::geocode
 library(budflights)
 library(leaflet)
 library(googleVis)
+library(RColorBrewer)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
@@ -150,5 +151,23 @@ shinyServer(function(input, output, session) {
              )
   })
   
+  output$map_seasonnality_plot <- renderPlot({
+    data <- dataInBounds() %>%
+      group_by(year, month) %>%
+      summarise( passengers = sum(passengers) )
+  
+    colors <- brewer.pal( length(unique(data$year)), "Accent" )
+    
+    plot( 0, 0, type = "n", xlim = c(.5,12.5), ylim=extendrange(data$passengers), axes = FALSE, ann = FALSE)
+    axis( 1, 1:12, substr(month.abb, 1, 1) )
+    axis( 2, axTicks(2), las = 2)
+    abline( h = axTicks(side=2), col = "lightgrey")
+    years <- unique(data$year)
+    for( i in seq_along(years) ){
+      d <- filter(data, year == years[i])
+      lines( d$month, d$passengers, col = colors[i], lwd = 3 )
+    }
+    
+  }, width = 350, height = 350)
   
 })
