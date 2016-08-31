@@ -64,7 +64,10 @@ shinyUI(fluidPage(
                draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
                width = 330, height = "auto",
                        
-               textOutput("coords")
+               textOutput("map_flights_count"), 
+               textOutput("map_flights_count_details"),
+               hr(), 
+               textOutput("map_flights_city_country")
              )
         )
               

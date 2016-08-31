@@ -112,17 +112,43 @@ shinyServer(function(input, output, session) {
   })
   
   dataInBounds <- reactive({
-    if( is.null(input$map_bounds ) ){
-      "foo"
+    bounds <- input$map_bounds 
+    data <- left_join( flights, cities, by = c("country", "city") )
+    if( is.null(bounds) ){
+      data
     } else {
-      "bar"
+      data %>% 
+        filter( xmin > bounds$west, xmax < bounds$east, ymin > bounds$south, ymax < bounds$north)
     }
   })
   
-  output$coords <- renderText({
-    dataInBounds()
+  output$map_flights_count <- renderText({
+    data <- dataInBounds()
+    sprintf( "%d flights", nrow(data) )
   })
   
+  output$map_flights_count_details <- renderText({
+    data <- dataInBounds()
+    directions <- data %>% 
+      group_by( direction ) %>%
+      summarise( n = n() )
+    
+    sprintf( "%d incoming, %d outgoing", 
+             directions$n[ directions$direction == "Incoming" ],
+             directions$n[ directions$direction == "Outgoing" ]
+    )
+  })
+  
+  output$map_flights_city_country <- renderText({
+    data <- dataInBounds()
+    cities_in_bounds <- unique( data$city )
+    countries_in_bounds <- unique( data$country )
+    
+    sprintf( "%d cities, %d countries" , 
+             length(cities_in_bounds), 
+             length(countries_in_bounds)
+             )
+  })
   
   
 })

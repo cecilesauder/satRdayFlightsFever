@@ -55,3 +55,16 @@ h1, h2, h3, h4 { font-weight: 400; }
 .leaflet-container {
   background-color: white !important;
 }
+
+#map_flights_count{
+  font-weight: bold;
+}
+
+#map_flights_count_details{
+  font-weight: bold ;
+  font-size: small ;
+}
+
+#map_flights_city_country{
+  font-weight: bold;
+}
