@@ -90,8 +90,8 @@ shinyUI(fluidPage(
      
 ######################################################################################################     
      navbarMenu("Plot",
-       tabPanel("Saisonality", 
-                h3("Saisonality plot (passengers)"),
+       tabPanel("Seasonality", 
+                h3("Seasonality plot (number of passengers)"),
                 fluidRow(
                   plotOutput("map_seasonnality_plot",
                              width= "100%")
