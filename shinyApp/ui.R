@@ -20,7 +20,7 @@ max_date <- as.Date( "2012/06/01" )
 
 shinyUI(fluidPage(
   includeCSS("www/styles.css"),
-  navbarPage("SatRday flights fever",
+  navbarPage("SatRday flights fever : Flights from/to Budapest",
 
 ######################################################################################################     
 
