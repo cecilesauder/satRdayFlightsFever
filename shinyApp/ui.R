@@ -68,8 +68,9 @@ tabPanel("Interactive map",
          
       ), 
 
-     #####################################
-     tabPanel("Data explorer",
+###############################################################################################
+     navbarMenu("Tables",
+       tabPanel("Data explorer",
               h3("Filter and select data"), br(),
               wellPanel(
               fluidRow(
@@ -108,10 +109,6 @@ tabPanel("Interactive map",
           )
         
      ),
-     
-     
-######################################################################################################     
-     
      tabPanel("Summary",
               wellPanel(
                 fluidRow(
@@ -119,22 +116,28 @@ tabPanel("Interactive map",
                          selectInput("groupV", label = "Select Variable(s) to group by :", 
                                      c("None", names(flights)), selected = "None", multiple = TRUE)
                          
-                         ),
+                  ),
                   column(4, ""),
                   column(3,
                          br(),
                          actionButton("summary_button", label = "SUBMIT")
-                         )
+                  )
                 )
               ),
               mainPanel(
                 DT::dataTableOutput("tabSummary")
               )
               
+     )
      ),
      
+     
 ######################################################################################################     
-     navbarMenu("Plot",
+     
+
+     
+######################################################################################################     
+     navbarMenu("Plots",
        tabPanel("Seasonality", 
                 h3("Seasonality plot (number of passengers)"),
                 #fluidRow(
