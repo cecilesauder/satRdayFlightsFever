@@ -8,6 +8,8 @@ library(leaflet)
 shinyUI(fluidPage(
   includeCSS("www/styles.css"),
   navbarPage("SatRday flights fever",
+
+######################################################################################################     
              
      tabPanel("Data explorer",
               wellPanel(
@@ -48,6 +50,7 @@ shinyUI(fluidPage(
      ),
      
      
+######################################################################################################     
      
      tabPanel("Summary",
         sidebarLayout(
@@ -63,12 +66,13 @@ shinyUI(fluidPage(
               
      ),
      
+######################################################################################################     
      
      tabPanel("Plot", 
         htmlOutput("plot")                      
      ),
      
-     
+######################################################################################################     
      tabPanel("Interactive map",
         div( class = "outer", 
              leafletOutput("map", height = "100%"), 
