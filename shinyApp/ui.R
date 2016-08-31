@@ -36,8 +36,9 @@ shinyUI(fluidPage(
               selectInput("selectVar", label = "Select Variable(s) :", 
                           c("All", names(flights)), selected = "All", multiple = TRUE)
             ),
+            column(3, ""),
             column(3,
-                   br(), br(),
+                   br(), 
                   actionButton("explorer_button", label = "SUBMIT")
             )
               
@@ -53,16 +54,23 @@ shinyUI(fluidPage(
 ######################################################################################################     
      
      tabPanel("Summary",
-        sidebarLayout(
-          sidebarPanel(
-            selectInput("groupV", label = "Select Variable(s) to group by :", 
-                        c("None", names(flights)), selected = "None", multiple = TRUE),
-            actionButton("summary_button", label = "SUBMIT")
-          ),
-          mainPanel(
-            DT::dataTableOutput("tabSummary")
-          )
-        )
+              wellPanel(
+                fluidRow(
+                  column(5,
+                         selectInput("groupV", label = "Select Variable(s) to group by :", 
+                                     c("None", names(flights)), selected = "None", multiple = TRUE)
+                         
+                         ),
+                  column(4, ""),
+                  column(3,
+                         br(),
+                         actionButton("summary_button", label = "SUBMIT")
+                         )
+                )
+              ),
+              mainPanel(
+                DT::dataTableOutput("tabSummary")
+              )
               
      ),
      
