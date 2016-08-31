@@ -162,7 +162,6 @@ shinyServer(function(input, output, session) {
   
   dataInBounds <- reactive({
     bounds <- input$map_bounds 
-    print(bounds)
     
     date_range <- input$map_slider
     date_year  <- as.numeric(substr( date_range, 1, 4))
@@ -177,38 +176,48 @@ shinyServer(function(input, output, session) {
           xmin > bounds$west, xmax < bounds$east, ymin > bounds$south, ymax < bounds$north,
           year > date_year[1] | ( year == date_year[1] & month >= date_month[1] ), 
           year < date_year[2] | ( year == date_year[1] & month <= date_month[2] )
-        )
+        ) %>% 
+        group_by( country, city, direction ) %>%
+        summarise( passengers = sum(passengers), flights = sum(flights), 
+                   longitude = first(longitude), 
+                   latitude = first(latitude) )
     }
   })
   
   
   # Create the map
   output$map <- renderLeaflet({
-    # data <- dataInBounds() %>%
-    #   group_by( country, city ) %>%
-    #   summarise( passengers = sum(passengers), longitude = first(longitude), latitude = first(latitude))
-    #   
     m <- leaflet() %>%
       addTiles( ) %>%
-      addCircles(cities$longitude, cities$latitude, popup=paste(cities$city, cities$country, sep=", ")) 
-    
-    # if( !is.null(data) ) 
-    #   m <- m %>%
-    #     addCircles(data$longitude, data$latitude, popup=paste(data$city, data$country, sep=", ") )
+      addCircles(cities$longitude, cities$latitude,  popup = paste(cities$city, cities$country, sep=", ")) 
     m
   })
   
-  
   output$map_flights_count <- renderText({
     data <- dataInBounds()
-    sprintf( "%d flights", nrow(data) )
+    sprintf( "%d flights", sum(data$flights) )
+  })
+  output$map_passengers_count <- renderText({
+    data <- dataInBounds()
+    sprintf( "%d passengers", sum(data$passengers) )
   })
   
   output$map_flights_count_details <- renderText({
     data <- dataInBounds()
     directions <- data %>% 
       group_by( direction ) %>%
-      summarise( n = n() )
+      summarise( n = sum(flights) )
+    
+    sprintf( "%s incoming, %s outgoing", 
+             format(directions$n[ directions$direction == "Incoming" ]),
+             format(directions$n[ directions$direction == "Outgoing" ])
+    )
+  })
+  output$map_passengers_count_details <- renderText({
+    data <- dataInBounds()
+    directions <- data %>% 
+      group_by( direction ) %>%
+      summarise( n = sum(passengers) )
     
     sprintf( "%d incoming, %d outgoing", 
              directions$n[ directions$direction == "Incoming" ],
@@ -246,5 +255,13 @@ shinyServer(function(input, output, session) {
     }
     
   }, width = 350, height = 350)
+  
+  map_table <- reactive({
+    data <- dataInBounds() %>%
+      arrange( desc(passengers) ) %>%
+      select(country, city, direction, passengers, flights)
+  })
+  
+  output$map_table <- DT::renderDataTable(DT::datatable(map_table(), rownames = FALSE))
   
 })

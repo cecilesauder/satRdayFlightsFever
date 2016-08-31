@@ -121,18 +121,25 @@ shinyUI(fluidPage(
              absolutePanel(
                id = "controls", class = "panel panel-default", fixed = TRUE,
                draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
-               width = 400, height = "auto",
+               width = 500, height = "auto",
                       
                h4("summary data"), 
                
                textOutput("map_flights_count"), 
                textOutput("map_flights_count_details"),
                br(), 
-               textOutput("map_flights_city_country")
+               textOutput("map_flights_city_country"),
+               hr(), 
+               textOutput("map_passengers_count"), 
+               textOutput("map_passengers_count_details"),
+               hr(),
+               br(),
                
                # h4("seasonnality (passengers)"), 
                # plotOutput("map_seasonnality_plot"), 
                # textOutput("map_slider_info")
+               
+               DT::dataTableOutput("map_table")
                
             ), 
             
