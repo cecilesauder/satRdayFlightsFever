@@ -99,9 +99,17 @@ shinyUI(fluidPage(
                                      c(unique(flights$country)), selected = country5, multiple = TRUE)
                          
                   ),
-                  column(4, ""),
-                  column(3,
-                         br(),
+                  column(5, 
+                         
+                         sliderInput("plot_slider", label = "",  
+                                     min=min_date, max = max_date, 
+                                     value=c(min_date, max_date), 
+                                     width= "100%", timeFormat = c( "%b %Y")
+                         )
+                         
+                         ),
+                  column(2,
+                         br(), br(),
                          actionButton("plot_button", label = "SUBMIT")
                   )
                 )

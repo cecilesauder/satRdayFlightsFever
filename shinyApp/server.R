@@ -93,11 +93,18 @@ shinyServer(function(input, output, session) {
   #plot
   countryPlot <- reactive({
     input$plot_button
+
     
     isolate({
       countries<-input$selectCountry
+      date_range <- input$plot_slider
+      date_year  <- as.numeric(substr( date_range, 1, 4))
+      date_month <- as.numeric(substr( date_range, 6, 7))
       df<-flights %>%
-        filter(country %in% countries) %>%
+        filter(country %in% countries,
+                 year > date_year[1] | ( year == date_year[1] & month >= date_month[1] ), 
+                 year < date_year[2] | ( year == date_year[1] & month <= date_month[2] )
+               ) %>%
         group_by(country) %>%
         summarise(Passengers = sum(passengers), nflights= sum(flights), 
                   Seats=sum(capacity), weight=sum(weight),
