@@ -89,41 +89,44 @@ shinyUI(fluidPage(
      ),
      
 ######################################################################################################     
-     
-     tabPanel("Plot", 
-              h3("Saisonality plot (passengers)"),
-              fluidRow(
-                plotOutput("map_seasonnality_plot",
-                           width= "100%")
-              ),
-              h3("By country plot"),
-              wellPanel(
+     navbarMenu("Plot",
+       tabPanel("Saisonality", 
+                h3("Saisonality plot (passengers)"),
                 fluidRow(
-                  column(5,
-                         
-                         selectInput("selectCountry", label = "Select countries to display :", 
-                                     c(unique(flights$country)), selected = country5, multiple = TRUE)
-                         
-                  ),
-                  column(5, 
-                         
-                         sliderInput("plot_slider", label = "",  
-                                     min=min_date, max = max_date, 
-                                     value=c(min_date, max_date), 
-                                     width= "100%", timeFormat = c( "%b %Y")
-                         )
-                         
-                         ),
-                  column(2,
-                         br(), br(),
-                         actionButton("plot_button", label = "SUBMIT")
-                  )
+                  plotOutput("map_seasonnality_plot",
+                             width= "100%")
                 )
-              ),
-              htmlOutput("plot"),
-              br(),
-              htmlOutput("plot2")
-
+                ),
+       tabPanel("By country",
+                h3("By country plot"),
+                wellPanel(
+                  fluidRow(
+                    column(5,
+                           
+                           selectInput("selectCountry", label = "Select countries to display :", 
+                                       c(unique(flights$country)), selected = country5, multiple = TRUE)
+                           
+                    ),
+                    column(5, 
+                           
+                           sliderInput("plot_slider", label = "",  
+                                       min=min_date, max = max_date, 
+                                       value=c(min_date, max_date), 
+                                       width= "100%", timeFormat = c( "%b %Y")
+                           )
+                           
+                    ),
+                    column(2,
+                           br(), br(),
+                           actionButton("plot_button", label = "SUBMIT")
+                    )
+                  )
+                ),
+                htmlOutput("plot"),
+                br(),
+                htmlOutput("plot2")
+                
+       )
      ),
      
 ######################################################################################################     
