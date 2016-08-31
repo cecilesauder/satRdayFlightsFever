@@ -4,6 +4,7 @@ library(dplyr)
 geocode<-dismo::geocode
 library(budflights)
 library(leaflet)
+library(googleVis)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
@@ -54,7 +55,8 @@ shinyServer(function(input, output) {
       if(!identical(input$groupV, "None")){
         data <- data %>%
           group_by_(.dots = input$groupV) %>%
-          summarise(npassengers = sum(passengers), nflights= sum(flights), capacity=sum(capacity), weight=sum(weight))
+          summarise(npassengers = sum(passengers), nflights= sum(flights), 
+                    capacity=sum(capacity), weight=sum(weight))
       }
       data  
     })
@@ -64,8 +66,21 @@ shinyServer(function(input, output) {
   output$tabSummary <- DT::renderDataTable(DT::datatable(summary_table()))
 
   #plot
-  output$plot <- renderPlot({
-    plot(data)
+  output$plot <- renderGvis({
+    df<-flights %>%
+      group_by(country, direction) %>%
+      summarise(npassengers = sum(passengers), nflights= sum(flights), capacity=sum(capacity), weight=sum(weight)) %>%
+      mutate(filling_rate = npassengers/capacity) %>%
+      select(country, direction, npassengers)
+    df
+    df<-df %>%
+      summarise(npassInc = sum(npassengers[direction=="Incoming"]), 
+                npassOut = sum(npassengers[direction=="Outgoing"])) %>%
+      select(country, npassInc, npassOut) %>%
+      arrange( desc(npassInc)) %>%
+      head(n=5)
+    
+    gvisBarChart(df)
   }
   
   )

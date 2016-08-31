@@ -44,7 +44,7 @@ shinyUI(fluidPage(
               
      ),
      tabPanel("Plot", 
-        plotOutput("plot")                      
+        htmlOutput("plot")                      
      ),
      tabPanel("Interactive map",
         div( class = "outer", 
