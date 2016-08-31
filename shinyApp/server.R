@@ -87,22 +87,27 @@ shinyServer(function(input, output, session) {
   #plot
   output$plot <- renderGvis({
     df<-flights %>%
-      group_by(country, direction) %>%
-      summarise(npassengers = sum(passengers), nflights= sum(flights), capacity=sum(capacity), weight=sum(weight)) %>%
-      mutate(filling_rate = npassengers/capacity) %>%
-      select(country, direction, npassengers)
-    df
-    df<-df %>%
-      summarise(npassInc = sum(npassengers[direction=="Incoming"]), 
-                npassOut = sum(npassengers[direction=="Outgoing"])) %>%
-      select(country, npassInc, npassOut) %>%
-      arrange( desc(npassInc)) %>%
+      group_by(country) %>%
+      summarise(npassengers = sum(passengers), nflights= sum(flights), 
+                capacity=sum(capacity), weight=sum(weight)) %>%
+      arrange( desc(nflights)) %>%
       head(n=5)
-    
-    gvisBarChart(df)
-  }
+    # %>%
+    #   mutate(filling_rate = npassengers/capacity) %>%
+    #   select(country, direction, npassengers)
+    # df
+    # df<-df %>%
+    #   summarise(npassInc = sum(npassengers[direction=="Incoming"]), 
+    #             npassOut = sum(npassengers[direction=="Outgoing"])) %>%
+    #   select(country, npassengers, capacity) %>%
+    #   arrange( desc(npassInc)) %>%
+    #   head(n=5)
+    # 
+    Bar<-gvisBarChart(df)
+    Bar
+    #plot(Bar)
+  })
   
-  )
   # Create the map
   output$map <- renderLeaflet({
     m<-leaflet() %>%

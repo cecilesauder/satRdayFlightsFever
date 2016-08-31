@@ -77,7 +77,25 @@ shinyUI(fluidPage(
 ######################################################################################################     
      
      tabPanel("Plot", 
-        htmlOutput("plot")                      
+              h3("By country - plot"),
+              wellPanel(
+                fluidRow(
+                  column(5,
+                         selectInput("groupV", label = "Select countries to display :", 
+                                     c("None", unique(flights$country)), selected = "None", multiple = TRUE)
+                         
+                  ),
+                  column(4, ""),
+                  column(3,
+                         br(),
+                         actionButton("plot_button", label = "SUBMIT")
+                  )
+                )
+              ),
+              
+                htmlOutput("plot")
+              
+                              
      ),
      
 ######################################################################################################     
