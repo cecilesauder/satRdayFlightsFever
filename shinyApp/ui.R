@@ -21,7 +21,45 @@ max_date <- as.Date( "2012/06/01" )
 shinyUI(fluidPage(
   includeCSS("www/styles.css"),
   navbarPage("SatRday flights fever",
-
+             
+####################################################################################################           
+             
+             tabPanel("Interactive map",
+                      div( class = "outer", 
+                           leafletOutput("map", height = "100%"), 
+                           
+                           absolutePanel(
+                             id = "controls", class = "panel panel-default", fixed = TRUE,
+                             draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
+                             width = 400, height = "auto",
+                             
+                             h3("Summary data"), 
+                             
+                             textOutput("map_flights_count"), 
+                             textOutput("map_flights_count_details"),
+                             br(), 
+                             textOutput("map_flights_city_country")
+                             
+                             # h3("seasonnality (passengers)"), 
+                             # plotOutput("map_seasonnality_plot"), 
+                             # textOutput("map_slider_info")
+                             
+                           ), 
+                           
+                           
+                           absolutePanel(id="map_slider_panel", fixed = TRUE, bottom = 20, left=20, right=20, width="auto", 
+                                         draggable = TRUE, 
+                                         
+                                         sliderInput("map_slider", label = "",  
+                                                     min=min_date, max = max_date, 
+                                                     value=c(min_date, max_date), 
+                                                     width= "100%", timeFormat = c( "%B %Y")
+                                         )
+                           )
+                           
+                      )
+                      
+             ),
 ######################################################################################################     
              
      tabPanel("Data explorer",
@@ -127,46 +165,11 @@ shinyUI(fluidPage(
                 htmlOutput("plot2")
                 
        )
-     ),
+     )
      
 ######################################################################################################     
      
-     tabPanel("Interactive map",
-        div( class = "outer", 
-             leafletOutput("map", height = "100%"), 
-             
-             absolutePanel(
-               id = "controls", class = "panel panel-default", fixed = TRUE,
-               draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
-               width = 400, height = "auto",
-                      
-               h3("Summary data"), 
-               
-               textOutput("map_flights_count"), 
-               textOutput("map_flights_count_details"),
-               br(), 
-               textOutput("map_flights_city_country")
-               
-               # h3("seasonnality (passengers)"), 
-               # plotOutput("map_seasonnality_plot"), 
-               # textOutput("map_slider_info")
-               
-            ), 
-            
-            
-            absolutePanel(id="map_slider_panel", fixed = TRUE, bottom = 20, left=20, right=20, width="auto", 
-                          draggable = TRUE, 
-                          
-                          sliderInput("map_slider", label = "",  
-                                      min=min_date, max = max_date, 
-                                      value=c(min_date, max_date), 
-                                      width= "100%", timeFormat = c( "%B %Y")
-                          )
-            )
-            
-        )
-              
-     )
+
   )
 )
 )
