@@ -25,9 +25,10 @@ shinyUI(fluidPage(
 ######################################################################################################     
              
      tabPanel("Data explorer",
+              h3("Filter and select data"), br(),
               wellPanel(
               fluidRow(
-                h3("Filter and select data"),
+                
                 column(3, 
                               
             selectInput("country", label=NULL,
@@ -90,7 +91,12 @@ shinyUI(fluidPage(
 ######################################################################################################     
      
      tabPanel("Plot", 
-              h3("By country - plot"),
+              h3("Saisonality plot (passengers)"),
+              fluidRow(
+                plotOutput("map_seasonnality_plot",
+                           width= "100%")
+              ),
+              h3("By country plot"),
               wellPanel(
                 fluidRow(
                   column(5,
@@ -131,14 +137,14 @@ shinyUI(fluidPage(
                draggable = TRUE, top = 60, left = "auto", right = 20, bottom = "auto",
                width = 400, height = "auto",
                       
-               h4("summary data"), 
+               h3("Summary data"), 
                
                textOutput("map_flights_count"), 
                textOutput("map_flights_count_details"),
                br(), 
                textOutput("map_flights_city_country")
                
-               # h4("seasonnality (passengers)"), 
+               # h3("seasonnality (passengers)"), 
                # plotOutput("map_seasonnality_plot"), 
                # textOutput("map_slider_info")
                

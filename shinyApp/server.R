@@ -236,7 +236,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$map_seasonnality_plot <- renderPlot({
-    data <- dataInBounds() %>%
+    data <- flights %>%
       group_by(year, month) %>%
       summarise( passengers = sum(passengers) )
   
@@ -251,7 +251,8 @@ shinyServer(function(input, output, session) {
       d <- filter(data, year == years[i])
       lines( d$month, d$passengers, col = colors[i], lwd = 3 )
     }
+    legend("topleft", legend=2007:2012,  col=colors[1:6], lwd=rep(2,6))
     
-  }, width = 350, height = 350)
+  })
   
 })
