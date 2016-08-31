@@ -17,16 +17,12 @@ body, label, input, button, select {
   font-family: 'Helvetica Neue', Helvetica;
   font-weight: 200;
 }
-body {/*http://wallpapercave.com/wp/XzhGUKj.jpg */
-/*https://c2.staticflickr.com/8/7001/6790629125_e0e5695dcc_b.jpg*/
-/*http://wallpapercave.com/wp/5kYzY4I.jpg*/
-/*http://cdn.xl.thumbs.canstockphoto.com/canstock22761765.jpg*/
-/*http://img15.hostingpics.net/pics/291670discoballglobe3.png*/
-/*http://img4.hostingpics.net/pics/275072discoballglobe2.png*/
-  background-image: url("http://img15.hostingpics.net/pics/291670discoballglobe3.png"); 
-  /* background-image: url(discoballglobe3.png) ; */
+body {
+  background-image: url(discoballglobe3.png) ;
   background-position: center top;
+  background-repeat: no-repeat ;
   background-color : #000000; 
+  background-size: cover ;
 }
 h1, h2, h3, h4 { font-weight: 400; }
 
