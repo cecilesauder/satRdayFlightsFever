@@ -45,6 +45,12 @@ h1, h2, h3, h4 { font-weight: 400;
   /* opacity: 0.95; */
   transition-delay: 0;
 }
+.navbar-header, .nav {
+  font-size: big;
+  font-weight: bold ;
+  left: 0;
+  right: 0;
+}
 
 /* Position and style citation */
 #cite {
