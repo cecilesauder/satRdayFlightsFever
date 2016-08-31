@@ -51,7 +51,7 @@ shinyUI(fluidPage(
      
      
      tabPanel("Plot", 
-        plotOutput("plot")                      
+        htmlOutput("plot")                      
      ),
      
      
