@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
   })
   
   # Filter data based on selections
-  output$table <- DT::renderDataTable(DT::datatable(explorer_table()))
+  output$table <- DT::renderDataTable(DT::datatable(explorer_table(), rownames = FALSE))
 
   # the table to display on the summary tab. 
   # the ui is only updated when the submit button for this tab is clicked
@@ -83,7 +83,7 @@ shinyServer(function(input, output, session) {
   })
   
   #Summary table
-  output$tabSummary <- DT::renderDataTable(DT::datatable(summary_table()))
+  output$tabSummary <- DT::renderDataTable(DT::datatable(summary_table(), rownames = FALSE))
 
   #plot
   output$plot <- renderGvis({
