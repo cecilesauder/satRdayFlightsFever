@@ -23,8 +23,8 @@ body {/*http://wallpapercave.com/wp/XzhGUKj.jpg */
 /*http://cdn.xl.thumbs.canstockphoto.com/canstock22761765.jpg*/
 /*http://img15.hostingpics.net/pics/291670discoballglobe3.png*/
 /*http://img4.hostingpics.net/pics/275072discoballglobe2.png*/
-/*  background-image: url("http://img15.hostingpics.net/pics/291670discoballglobe3.png"); */
-  background-image: url(discoballglobe3.png) ;
+  background-image: url("http://img15.hostingpics.net/pics/291670discoballglobe3.png"); 
+  /* background-image: url(discoballglobe3.png) ; */
   background-position: center top;
   background-color : #000000; 
 }
