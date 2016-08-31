@@ -7,6 +7,11 @@ library(leaflet)
 library(googleVis)
 library(RColorBrewer)
 
+dates <- distinct( flights, year, month ) %>%
+  arrange( year, month) %>%
+  as.data.frame()
+
+
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
   
@@ -169,5 +174,16 @@ shinyServer(function(input, output, session) {
     }
     
   }, width = 350, height = 350)
+  
+  map_slider_month <- reactive({
+    value <-  as.numeric(input$map_slider)
+    year <- dates[ value, "year"]
+    month <- month.abb[ dates[value, "month"] ]
+    
+    paste( month, year)
+  })
+  
+  output$map_slider_text <- renderText(map_slider_month())
+  
   
 })

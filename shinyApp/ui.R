@@ -102,21 +102,15 @@ shinyUI(fluidPage(
                h4("seasonnality (passengers)"), 
                plotOutput("map_seasonnality_plot"), 
                
-               textOutput("map_slider_info")
+               textOutput("map_slider_info"),
                
-            ), 
-            
-            absolutePanel(
-              id = "map_slider_panel", class = "panel panel-default", fixed = TRUE, 
-              draggable = TRUE, bottom = 20, left = 20, right = 20, width = "auto" , 
-              
-              sliderInput("map_slider", label = "month",
-                          min = 1, max = nmonths , 
-                          value = 1,  step = 1, ticks = FALSE, 
-                          width = "100%"
-              )
+               h3(textOutput("map_slider_text")), 
+               sliderInput("map_slider", label = "",
+                           min = 1, max = nmonths , 
+                           value = 1,  step = 1, ticks = FALSE, 
+                           width = "100%"
+               )
             )
-            
             
         )
               
