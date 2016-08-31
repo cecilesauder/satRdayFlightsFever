@@ -60,7 +60,6 @@ shinyUI(fluidPage(
                                          c("None", names(flights)), selected = "None", multiple = TRUE),
                              submitButton("SUBMIT")    
                            )
-                           
                       )
                       
              )
