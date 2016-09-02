@@ -14,8 +14,6 @@ dates <- distinct( flights, year, month ) %>%
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
-  
-  
   explorer_city <- reactive({
     countries <- input$country
     data <- if( "All countries" %in% countries ){
@@ -196,8 +194,54 @@ shinyServer(function(input, output, session) {
   output$map <- renderLeaflet({
     m <- leaflet() %>%
       addTiles( ) %>%
-      addCircles(cities$longitude, cities$latitude,  popup = paste(cities$city, cities$country, sep=", ")) 
+      addCircles(cities$longitude, cities$latitude,
+                  popup = paste(cities$city, cities$country, sep=", ") )
     m
+  })
+  
+  observe({
+    data <- dataInBounds() %>%
+      group_by(country, city)  %>%
+      summarise( 
+        longitude = first(longitude), 
+        latitude = first(latitude), 
+        incoming_passengers = sum(passengers[direction == "Incoming"]), 
+        outgoing_passengers = sum(passengers[direction == "Outgoing"]), 
+        all_passengers      = incoming_passengers + outgoing_passengers,
+        
+        incoming_flights = sum(flights[direction == "Incoming"]), 
+        outgoing_flights = sum(flights[direction == "Outgoing"]), 
+        all_flights      = incoming_flights + outgoing_flights
+        )
+    maxFlights <- max(data$all_flights, na.rm = TRUE)
+    data <- data %>%
+      mutate( radius = pmax( 4, all_flights / maxFlights * 30 ) )
+    
+    makePopup <- function(city, country, incoming_passengers, outgoing_passengers, all_passengers, incoming_flights, outgoing_flights, all_flights){
+      as.character(tagList( 
+        tags$strong(sprintf( "%s (%s)", city, country)), 
+        tags$br(), tags$br(), 
+        sprintf( "%d passengers (%d / %d)", all_passengers, incoming_passengers, outgoing_passengers ), 
+        tags$br(), 
+        sprintf( "%d flights (%d / %d)", all_flights, incoming_flights, outgoing_flights ) 
+      ))
+    }
+    
+    popups <- data %>% 
+      rowwise() %>% 
+      mutate( popup = makePopup(city, country, 
+                                incoming_passengers, outgoing_passengers, all_passengers,
+                                incoming_flights, outgoing_flights, all_flights
+                                ) ) %$% popup
+    leafletProxy("map") %>%
+      clearShapes() %>%
+      clearPopups() %>%
+      addCircleMarkers(
+        data$longitude, data$latitude,
+        radius = data$radius, 
+        popup = popups, 
+        stroke = FALSE
+      )
   })
   
   output$map_flights_count <- renderText({
