@@ -140,10 +140,9 @@ tabPanel("Interactive map",
      navbarMenu("Plots",
        tabPanel("Seasonality", 
                 h3("Seasonality plot (number of passengers)"),
-                fluidRow(
-                  plotOutput("map_seasonnality_plot",
-                             width= "100%")
-                )
+                #fluidRow(
+                  plotOutput("map_seasonnality_plot", width= "100%")
+                #)
                 ),
        tabPanel("By country",
                 h3("By country plot"),

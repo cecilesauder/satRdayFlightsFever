@@ -262,7 +262,7 @@ shinyServer(function(input, output, session) {
     }
     legend("topleft", legend=2007:2012,  col=colors[1:6], lwd=rep(2,6))
     
-  })
+  }, width = 1200, height = 800 )
   
   map_table <- reactive({
     data <- dataInBounds() %>%
