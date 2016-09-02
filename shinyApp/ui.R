@@ -5,6 +5,8 @@ geocode<-dismo::geocode
 library(budflights)
 library(leaflet)
 library(magrittr)
+library(ggplot2)
+library(ggvis)
 
 country5<-flights %>%
     group_by(country) %>%
@@ -139,15 +141,47 @@ tabPanel("Interactive map",
 ######################################################################################################     
      navbarMenu("Plots",
        tabPanel("Seasonality", 
-                h3("Seasonality plot (number of passengers)"),
-                h4("Design 1"),
-                #fluidRow(
-                plotOutput("map_seasonnality_plot"),
-                h4("Design 2"),
-                plotOutput("seasonality_ggplot"),
-                h4("Design 3"),
-                uiOutput("ggvis_ui"),
-                ggvisOutput("ggvis")
+                navlistPanel("Seasonality",
+                             tabPanel("Design 1",
+                                      plotOutput("map_seasonnality_plot")),
+                             tabPanel("Design 2",
+                                      plotOutput("seasonality_ggplot")),
+                             tabPanel("Design 3",
+                                      uiOutput("ggvis_ui"),
+                                      ggvisOutput("ggvis")
+                                      
+                                      ))
+                # selectInput("choiceDesign", "Choose design:", c("1"=1, "2"=2,"3"=3)),
+                # conditionalPanel(
+                #   condition = "input.choiceDesign == '1'",
+                #   h4("Design 1"),
+                #   #fluidRow(
+                #   plotOutput("map_seasonnality_plot")
+                #   
+                # ),
+                # conditionalPanel(
+                #   condition = "input.choiceDesign == '2'",
+                #   h4("Design 2"),
+                #   #fluidRow(
+                #   plotOutput("seasonality_ggplot")
+                #   
+                # ),
+                # conditionalPanel(
+                #   condition = "input.choiceDesign == '3'",
+                #   h4("Design 3"),
+                #   #fluidRow(
+                #   uiOutput("ggvis_ui"),
+                #   ggvisOutput("ggvis")                  
+                # )
+                # h3("Seasonality plot (number of passengers)"),
+                # h4("Design 1"),
+                # #fluidRow(
+                # plotOutput("map_seasonnality_plot"),
+                # h4("Design 2"),
+                # plotOutput("seasonality_ggplot"),
+                # h4("Design 3"),
+                # uiOutput("ggvis_ui"),
+                # ggvisOutput("ggvis")
                 #)
                 ),
        tabPanel("By country",

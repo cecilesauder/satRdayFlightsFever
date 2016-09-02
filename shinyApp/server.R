@@ -6,6 +6,8 @@ library(budflights)
 library(leaflet)
 library(googleVis)
 library(RColorBrewer)
+library(ggplot2)
+library(ggvis)
 
 
 dates <- distinct( flights, year, month ) %>%
