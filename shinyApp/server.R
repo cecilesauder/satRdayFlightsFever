@@ -7,12 +7,13 @@ library(leaflet)
 library(googleVis)
 library(RColorBrewer)
 
+
 dates <- distinct( flights, year, month ) %>%
   arrange( year, month) %>%
   as.data.frame()
 
 
-# Define server logic required to draw a histogram
+
 shinyServer(function(input, output, session) {
   
   
@@ -114,7 +115,57 @@ shinyServer(function(input, output, session) {
       df
     })
   })
-##############PLOT###################################################################################  
+##############PLOT################################################################################### 
+
+  output$map_seasonnality_plot <- renderPlot({
+    data <- flights %>%
+      group_by(year, month) %>%
+      summarise( passengers = sum(passengers) )
+    
+    colors <- brewer.pal( length(unique(data$year)), "Accent" )
+    
+    plot( 0, 0, type = "n", xlim = c(.5,12.5), ylim=extendrange(data$passengers), axes = FALSE, ann = FALSE)
+    axis( 1, 1:12, substr(month.abb, 1, 1) )
+    axis( 2, axTicks(2), las = 2)
+    abline( h = axTicks(side=2), col = "lightgrey")
+    years <- unique(data$year)
+    for( i in seq_along(years) ){
+      d <- filter(data, year == years[i])
+      lines( d$month, d$passengers, col = colors[i], lwd = 3 )
+    }
+    legend("topleft", legend=2007:2012,  col=colors[1:6], lwd=rep(2,6))
+    
+  })
+  
+  output$seasonality_ggplot <- renderPlot({
+    data <- flights %>%
+      mutate( year = as.factor(year) ) %>%
+      group_by(year, month) %>%
+      summarise( passengers = sum(passengers) )
+
+    
+    ggplot( data ) +
+      aes( x = month, y = passengers, 
+           group = year, color = year) +
+      geom_line() + 
+      geom_point()
+  })
+  
+############# ggvis outputs, different syntax, 2 outputs
+    data <- flights %>%
+      mutate( year = as.factor(year) ) %>%
+      group_by(year, month) %>%
+      summarise( passengers = sum(passengers) )
+    
+    data %>%
+      ggvis( x = ~month, y = ~passengers, 
+             stroke = ~year) %>% 
+      layer_lines() %>%
+      layer_points(fill = ~year) %>%
+      bind_shiny("ggvis", "ggvis_ui")
+    
+
+############################# 
   output$plot <- renderGvis({
     df<-countryPlot()
     df<-df %>% select(country, Passengers, Seats)
@@ -141,8 +192,8 @@ shinyServer(function(input, output, session) {
     #plot(Bar)
   })
   
-##########################################################################################################"  
-  # Create the map
+################################## MAP ##################################################################"  
+###########  # Create the map and others outputs
   output$map <- renderLeaflet({
     m<-leaflet() %>%
       addTiles( ) %>%
@@ -150,38 +201,6 @@ shinyServer(function(input, output, session) {
     m
   })
   
-  dataInBounds <- reactive({
-    bounds <- input$map_bounds 
-    
-    date_range <- input$map_slider
-    date_year  <- as.numeric(substr( date_range, 1, 4))
-    date_month <- as.numeric(substr( date_range, 6, 7))
-    
-    data <- left_join( flights, cities, by = c("country", "city") )
-    if( is.null(bounds) ){
-      data
-    } else {
-      data %>% 
-        filter( 
-          xmin > bounds$west, xmax < bounds$east, ymin > bounds$south, ymax < bounds$north,
-          year > date_year[1] | ( year == date_year[1] & month >= date_month[1] ), 
-          year < date_year[2] | ( year == date_year[1] & month <= date_month[2] )
-        ) %>% 
-        group_by( country, city, direction ) %>%
-        summarise( passengers = sum(passengers), flights = sum(flights), 
-                   longitude = first(longitude), 
-                   latitude = first(latitude) )
-    }
-  })
-  
-  
-  # Create the map
-  output$map <- renderLeaflet({
-    m <- leaflet() %>%
-      addTiles( ) %>%
-      addCircles(cities$longitude, cities$latitude,  popup = paste(cities$city, cities$country, sep=", ")) 
-    m
-  })
   
   output$map_flights_count <- renderText({
     data <- dataInBounds()
@@ -224,28 +243,38 @@ shinyServer(function(input, output, session) {
     sprintf( "%d cities, %d countries" , 
              length(cities_in_bounds), 
              length(countries_in_bounds)
-             )
+    )
   })
   
-  output$map_seasonnality_plot <- renderPlot({
-    data <- flights %>%
-      group_by(year, month) %>%
-      summarise( passengers = sum(passengers) )
   
-    colors <- brewer.pal( length(unique(data$year)), "Accent" )
+  output$map_table <- DT::renderDataTable(DT::datatable(map_table(), rownames = FALSE))
+  
+##############  #reactive STUFF 
+  dataInBounds <- reactive({
+    bounds <- input$map_bounds 
     
-    plot( 0, 0, type = "n", xlim = c(.5,12.5), ylim=extendrange(data$passengers), axes = FALSE, ann = FALSE)
-    axis( 1, 1:12, substr(month.abb, 1, 1) )
-    axis( 2, axTicks(2), las = 2)
-    abline( h = axTicks(side=2), col = "lightgrey")
-    years <- unique(data$year)
-    for( i in seq_along(years) ){
-      d <- filter(data, year == years[i])
-      lines( d$month, d$passengers, col = colors[i], lwd = 3 )
+    date_range <- input$map_slider
+    date_year  <- as.numeric(substr( date_range, 1, 4))
+    date_month <- as.numeric(substr( date_range, 6, 7))
+    
+    data <- left_join( flights, cities, by = c("country", "city") )
+    if( is.null(bounds) ){
+      data
+    } else {
+      data %>% 
+        filter( 
+          xmin > bounds$west, xmax < bounds$east, ymin > bounds$south, ymax < bounds$north,
+          year > date_year[1] | ( year == date_year[1] & month >= date_month[1] ), 
+          year < date_year[2] | ( year == date_year[1] & month <= date_month[2] )
+        ) %>% 
+        group_by( country, city, direction ) %>%
+        summarise( passengers = sum(passengers), flights = sum(flights), 
+                   longitude = first(longitude), 
+                   latitude = first(latitude) )
     }
-    legend("topleft", legend=2007:2012,  col=colors[1:6], lwd=rep(2,6))
-    
-  }, width = 1200, height = 800 )
+  })
+  
+  
   
   map_table <- reactive({
     data <- dataInBounds() %>%
@@ -253,6 +282,7 @@ shinyServer(function(input, output, session) {
       select(country, city, direction, passengers, flights)
   })
   
-  output$map_table <- DT::renderDataTable(DT::datatable(map_table(), rownames = FALSE))
+  
+
   
 })
