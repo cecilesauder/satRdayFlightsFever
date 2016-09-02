@@ -133,23 +133,6 @@ shinyServer(function(input, output, session) {
     df<-df %>% 
        select(country, Incoming, Outgoing)
       
-    #   flights %>%
-    #   group_by(country) %>%
-    #   summarise(npassengers = sum(passengers), nflights= sum(flights), 
-    #             capacity=sum(capacity), weight=sum(weight)) %>%
-    #   arrange( desc(nflights)) %>%
-    #   head(n=5)
-    # # %>%
-    #   mutate(filling_rate = npassengers/capacity) %>%
-    #   select(country, direction, npassengers)
-    # df
-    # df<-df %>%
-    #   summarise(npassInc = sum(npassengers[direction=="Incoming"]), 
-    #             npassOut = sum(npassengers[direction=="Outgoing"])) %>%
-    #   select(country, npassengers, capacity) %>%
-    #   arrange( desc(npassInc)) %>%
-    #   head(n=5)
-    # 
     Bar<-gvisBarChart(df,                     
                       options=list(
                       title="Number incoming and outgoing flights by country"

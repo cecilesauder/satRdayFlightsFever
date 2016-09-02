@@ -2,6 +2,6 @@ name: shinyApp
 account: cecilesauder
 server: shinyapps.io
 appId: 123667
-bundleId: 547496
+bundleId: 547508
 url: https://cecilesauder.shinyapps.io/shinyApp/
-when: 1472808678.58059
+when: 1472810188.25355
