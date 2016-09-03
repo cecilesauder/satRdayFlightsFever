@@ -120,8 +120,15 @@ tabPanel("Interactive map",
                   
                 ), 
                 column(2, 
-                  selectInput("selectVar", label = "Select Variable(s) :", 
-                              c("All", names(flights)), selected = "All", multiple = TRUE)
+                  fluidRow(
+                    checkboxInput("variables_checkbox", label = "All Variables", value = TRUE), 
+                    conditionalPanel( 
+                      condition = "input.variables_checkbox == false", 
+                      selectInput("selectVar", label = "Select Variable(s) :", 
+                                  names(flights), selected = NULL, multiple = TRUE)    
+                      )
+                  )
+                  
                 )
             )),
           

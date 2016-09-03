@@ -45,7 +45,8 @@ shinyServer(function(input, output, session) {
     all_countries <- input$country_checkbox
     all_cities    <- input$city_checkbox
     all_years     <- input$years_checkbox
-    
+    all_variables <- input$variables_checkbox
+      
     data <- flights
     if (!all_countries) {
       data <- data %>%
@@ -64,7 +65,7 @@ shinyServer(function(input, output, session) {
       data <- data %>%
         filter(direction %in% input$direction)
     }
-    if (!identical(input$selectVar, "All")) {
+    if (!all_variables) {
       data <-data %>%
         select_( .dots = input$selectVar)
     }
