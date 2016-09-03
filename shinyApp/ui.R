@@ -74,60 +74,59 @@ tabPanel("Interactive map",
      navbarMenu("Tables",
        tabPanel("Data explorer",
               h3("Filter and select data"), br(),
-              wellPanel(
+              
               fluidRow(
                 column(2, 
-                  fluidRow(
+                       wellPanel(
                     checkboxInput("country_checkbox", label = "All Countries", value = TRUE), 
                     conditionalPanel(
                       condition = 'input.country_checkbox == false', 
-                      selectInput("country", label="Select countries",
+                      selectInput("country", label="Select countries:",
                                   unique(as.character(flights$country)),
                                   selected=NULL, multiple=TRUE)                 
                     )
-                  )
-                ), 
+                  
+                )), 
                 column(2, 
-                  fluidRow(
+                       wellPanel(
                     checkboxInput("city_checkbox", label = "All Cities", value = TRUE),
                     conditionalPanel( 
                       condition = 'input.city_checkbox == false', 
-                      selectInput("city", label="Select cities",
+                      selectInput("city", label="Select cities:",
                                   unique(as.character(flights$city)),
                                   selected=NULL, multiple=TRUE)  
                       )
-                    
-                  )
-                ),
-                column(2,
+                )),
+                
+                column(2, wellPanel(
                   selectInput("direction", label=NULL,
                             c("All directions", unique(as.character(flights$direction))),
                             selected="All directions", multiple=FALSE)
-                ), 
+                )), 
+                
                 column(2, 
-                  fluidRow(
+                       wellPanel(
                     checkboxInput("years_checkbox", label = "All Years", value = TRUE),    
                     conditionalPanel( 
                       condition = "input.years_checkbox == false", 
                       selectInput(
-                        "year",label=NULL,
+                        "year",label="Select year:",
                         unique(as.character(flights$year)),
                         selected=NULL, 
                         multiple=TRUE
                       )
-                    ) 
+                     
                   )
-                  
-                ), 
+                )),
+               
                 column(2, 
-                  fluidRow(
+                       wellPanel(
                     checkboxInput("variables_checkbox", label = "All Variables", value = TRUE), 
                     conditionalPanel( 
                       condition = "input.variables_checkbox == false", 
                       selectInput("selectVar", label = "Select Variable(s) :", 
                                   names(flights), selected = NULL, multiple = TRUE)    
                       )
-                  )
                   
                 )
             )),
@@ -138,9 +137,10 @@ tabPanel("Interactive map",
         
      ),
      tabPanel("Summary",
-              wellPanel(
+              
                 fluidRow(
-                  column(5,
+                  column(5, 
+                         wellPanel(
                          selectInput("groupV", label = "Select Variable(s) to group by :", 
                                      c("None", "year", "month", "country","city", "direction" ), 
                                      selected = "None", multiple = TRUE)
@@ -171,41 +171,8 @@ tabPanel("Interactive map",
                              tabPanel("Design 3",
                                       uiOutput("ggvis_ui"),
                                       ggvisOutput("ggvis")
-                                      
                                       ))
-                # selectInput("choiceDesign", "Choose design:", c("1"=1, "2"=2,"3"=3)),
-                # conditionalPanel(
-                #   condition = "input.choiceDesign == '1'",
-                #   h4("Design 1"),
-                #   #fluidRow(
-                #   plotOutput("map_seasonnality_plot")
-                #   
-                # ),
-                # conditionalPanel(
-                #   condition = "input.choiceDesign == '2'",
-                #   h4("Design 2"),
-                #   #fluidRow(
-                #   plotOutput("seasonality_ggplot")
-                #   
-                # ),
-                # conditionalPanel(
-                #   condition = "input.choiceDesign == '3'",
-                #   h4("Design 3"),
-                #   #fluidRow(
-                #   uiOutput("ggvis_ui"),
-                #   ggvisOutput("ggvis")                  
-                # )
-                # h3("Seasonality plot (number of passengers)"),
-                # h4("Design 1"),
-                # #fluidRow(
-                # plotOutput("map_seasonnality_plot"),
-                # h4("Design 2"),
-                # plotOutput("seasonality_ggplot"),
-                # h4("Design 3"),
-                # uiOutput("ggvis_ui"),
-                # ggvisOutput("ggvis")
-                #)
-                ),
+               ),
        tabPanel("By country",
                 h3("By country plot"),
                 wellPanel(
