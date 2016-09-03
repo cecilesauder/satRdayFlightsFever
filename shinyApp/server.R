@@ -270,15 +270,14 @@ shinyServer(function(input, output, session) {
                                 incoming_flights, outgoing_flights, all_flights
                                 ) ) %$% popup
     
-    print( any( grep("Lille", popups)))
-    
     leafletProxy("map") %>%
       clearShapes() %>%
+      clearMarkers() %>%
       clearPopups() %>%
       addCircleMarkers(
         data$longitude, data$latitude,
-        radius = data$radius, 
-        popup = popups, 
+        radius = data$radius,
+        popup = popups,
         stroke = FALSE
       )
   })
