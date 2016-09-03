@@ -97,7 +97,7 @@ shinyServer(function(input, output, session) {
   #Summary table
   output$tabSummary <- DT::renderDataTable(DT::datatable(summary_table(), rownames = FALSE))
 
-  #plot
+  #data for the barchart plots
   countryPlot <- reactive({
     countries<-input$selectCountry
     date_range <- input$plot_slider
@@ -117,8 +117,18 @@ shinyServer(function(input, output, session) {
     df
   })
 ##############PLOT################################################################################### 
-
-  output$map_seasonnality_plot <- renderPlot({
+  output$downloadPlot <- downloadHandler(
+    filename = function() { 
+      paste('ShinySeasonalityPlot', '.png', sep='') 
+    },
+    content = function(file) {
+      png(file)
+      plotInput()
+      dev.off()
+    }
+  )
+  
+  plotInput <-function(){
     data <- flights %>%
       group_by(year, month) %>%
       summarise( passengers = sum(passengers) )
@@ -135,6 +145,10 @@ shinyServer(function(input, output, session) {
       lines( d$month, d$passengers, col = colors[i], lwd = 3 )
     }
     legend("topleft", legend=2007:2012,  col=colors[1:6], lwd=rep(2,6))
+  }
+
+  output$map_seasonnality_plot <- renderPlot({
+    print(plotInput())
     
   })
   
