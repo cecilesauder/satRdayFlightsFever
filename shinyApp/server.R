@@ -257,9 +257,13 @@ shinyServer(function(input, output, session) {
       as.character(tagList( 
         tags$strong(sprintf( "%s (%s)", city, country)), 
         tags$br(), tags$br(), 
-        sprintf( "%d passengers (%d / %d)", all_passengers, incoming_passengers, outgoing_passengers ), 
+        sprintf( "%d passengers", all_passengers), 
         tags$br(), 
-        sprintf( "%d flights (%d / %d)", all_flights, incoming_flights, outgoing_flights ) 
+        sprintf("incoming: %d, outgoing: %d", incoming_passengers, outgoing_passengers ), 
+        tags$br(), tags$br(), 
+        sprintf( "%d flights", all_flights), 
+        tags$br(), 
+        sprintf( "incoming: %d, outgoing: %d", incoming_flights, outgoing_flights ) 
       ))
     }
     
