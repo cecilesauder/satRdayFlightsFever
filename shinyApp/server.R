@@ -78,19 +78,20 @@ shinyServer(function(input, output, session) {
   # the table to display on the summary tab. 
   # the ui is only updated when the submit button for this tab is clicked
   summary_table <- reactive({
-    input$summary_button
-    
-    # using isolate to avoid dependency on this tab controls
-    isolate({
-      data <- flights
-      if(!identical(input$groupV, "None")){
-        data <- data %>%
-          group_by_(.dots = input$groupV) %>%
-          summarise(npassengers = sum(passengers), nflights= sum(flights), 
-                    capacity=sum(capacity), weight=sum(weight))
-      }
-      data  
-    })
+    data <- flights
+    groups <- input$groupV
+    if(!identical( groups , "None")){
+      groups <- setdiff( groups, "None" )
+      data <- data %>%
+        group_by_(.dots = groups ) %>%
+        summarise(
+          npassengers = sum(passengers), 
+          nflights= sum(flights), 
+          capacity=sum(capacity), 
+          weight=sum(weight)
+        )
+    }
+    data  
   })
   
   #Summary table

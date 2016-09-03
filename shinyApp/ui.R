@@ -142,13 +142,9 @@ tabPanel("Interactive map",
                 fluidRow(
                   column(5,
                          selectInput("groupV", label = "Select Variable(s) to group by :", 
-                                     c("None", names(flights)), selected = "None", multiple = TRUE)
+                                     c("None", "year", "month", "country","city", "direction" ), 
+                                     selected = "None", multiple = TRUE)
                          
-                  ),
-                  column(4, ""),
-                  column(3,
-                         br(),
-                         actionButton("summary_button", label = "SUBMIT")
                   )
                 )
               ),
