@@ -146,7 +146,8 @@ shinyServer(function(input, output, session) {
     
     colors <- brewer.pal( length(unique(data$year)), "Accent" )
     
-    plot( 0, 0, type = "n", xlim = c(.5,12.5), ylim=extendrange(data$passengers), axes = FALSE, ann = FALSE)
+    plot( 0, 0, type = "n", xlim = c(.5,12.5), 
+          ylim=extendrange(data$passengers), axes = FALSE, ann = FALSE)
     axis( 1, 1:12, substr(month.abb, 1, 1) )
     axis( 2, axTicks(2), las = 2)
     abline( h = axTicks(side=2), col = "lightgrey")
@@ -165,7 +166,8 @@ shinyServer(function(input, output, session) {
   
   plotInput2 <-function(){
     data <- flights %>%
-      mutate( year = as.factor(year) ) %>%
+      mutate( year = as.factor(year),
+              month = factor( month.abb[month], levels = month.abb )) %>%
       group_by(year, month) %>%
       summarise( passengers = sum(passengers) )
     
@@ -184,9 +186,10 @@ shinyServer(function(input, output, session) {
   
 ############# ggvis outputs, different syntax, 2 outputs
     data <- flights %>%
-      mutate( year = as.factor(year) ) %>%
+      mutate( year = as.factor(year),
+              month = factor( month.abb[month], levels = month.abb )) %>%
       group_by(year, month) %>%
-      summarise( passengers = sum(passengers) )
+      summarise( passengers = sum(passengers))
     
     all_values <- function(x) {
       if(is.null(x)) return(NULL)
@@ -198,6 +201,8 @@ shinyServer(function(input, output, session) {
              stroke = ~year) %>% 
       layer_lines() %>%
       layer_points(fill = ~year) %>%
+      add_axis("x", title = "Months") %>%
+      add_axis("y", title = "Passengers", title_offset = 80) %>%
       add_tooltip(all_values, "hover") %>%
       bind_shiny("ggvis", "ggvis_ui")
     

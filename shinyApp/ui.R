@@ -163,16 +163,19 @@ tabPanel("Interactive map",
 ######################################################################################################     
      navbarMenu("Plots",
        tabPanel("Seasonality", 
-                navlistPanel("Seasonality",
+                navlistPanel("Seasonality plot",
                              tabPanel("Design 1",
+                                      h4("Number of passengers by month grouped by years"),
                                       plotOutput("map_seasonnality_plot"),
                                       downloadButton('downloadPlot', 'Download plot')
                                       ),
                              tabPanel("Design 2",
+                                      h4("Number of passengers by month grouped by years"),
                                       plotOutput("seasonality_ggplot"),
                                       downloadButton('downloadPlot2', 'Download plot')
                                       ),
-                             tabPanel("Design 3",
+                             tabPanel("Design 3",                                      
+                                      h4("Number of passengers by month grouped by years"),
                                       uiOutput("ggvis_ui"),
                                       ggvisOutput("ggvis")
                                       ))
