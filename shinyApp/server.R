@@ -19,7 +19,9 @@ dates <- distinct( flights, year, month ) %>%
 shinyServer(function(input, output, session) {
   explorer_city <- reactive({
     countries <- input$country
-    data <- if( "All countries" %in% countries ){
+    all_countries <- input$country_checkbox
+    
+    data <- if( all_countries ){
       unique( cities$city )
     } else {
       cities %>% 
@@ -27,7 +29,7 @@ shinyServer(function(input, output, session) {
         city %>%
         unique
     }
-    c( "All cities", data )
+    data
   })
   
   observe({
@@ -40,31 +42,33 @@ shinyServer(function(input, output, session) {
     input$explorer_button
     
     # isolate to avoide dependency on selection controls
-    isolate({
-      data <- flights
-      if (!identical(input$country,"All countries")) {
-        data <- data %>%
-          filter(country %in% input$country)
-      }
-      cities <- explorer_city()
-      if (!identical(input$city, "All cities")) {
-        data <- data %>%
-          filter(city %in% input$city)
-      }
-      if (!identical(input$year, "All years")) {
-        data <- data %>%
-          filter(year %in% input$year)
-      }
-      if (!identical(input$direction, "All directions")) {
-        data <- data %>%
-          filter(direction %in% input$direction)
-      }
-      if (!identical(input$selectVar, "All")) {
-        data <-data %>%
-          select_( .dots = input$selectVar)
-      }
-      data  
-    })
+    all_countries <- input$country_checkbox
+    all_cities    <- input$city_checkbox
+    all_years     <- input$years_checkbox
+    
+    data <- flights
+    if (!all_countries) {
+      data <- data %>%
+        filter(country %in% input$country)
+    }
+    cities <- explorer_city()
+    if (!all_cities) {
+      data <- data %>%
+        filter(city %in% input$city)
+    }
+    if (!all_years) {
+      data <- data %>%
+        filter(year %in% input$year)
+    }
+    if (!identical(input$direction, "All directions")) {
+      data <- data %>%
+        filter(direction %in% input$direction)
+    }
+    if (!identical(input$selectVar, "All")) {
+      data <-data %>%
+        select_( .dots = input$selectVar)
+    }
+    data  
   })
   
   # Filter data based on selections

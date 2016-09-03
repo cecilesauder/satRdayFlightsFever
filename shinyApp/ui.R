@@ -76,34 +76,53 @@ tabPanel("Interactive map",
               h3("Filter and select data"), br(),
               wellPanel(
               fluidRow(
-                
-                column(3, 
-                              
-            selectInput("country", label=NULL,
-                        c("All countries", unique(as.character(flights$country))),
-                        selected="All countries", multiple=TRUE),
-            selectInput("city", label=NULL,
-                        c("All cities", unique(as.character(flights$city))),
-                        selected="All cities", multiple=TRUE)
+                column(2, 
+                  fluidRow(
+                    checkboxInput("country_checkbox", label = "All Countries", value = TRUE), 
+                    conditionalPanel(
+                      condition = 'input.country_checkbox == false', 
+                      selectInput("country", label="Select countries",
+                                  unique(as.character(flights$country)),
+                                  selected=NULL, multiple=TRUE)                 
+                    )
+                  )
+                ), 
+                column(2, 
+                  fluidRow(
+                    checkboxInput("city_checkbox", label = "All Cities", value = TRUE),
+                    conditionalPanel( 
+                      condition = 'input.city_checkbox == false', 
+                      selectInput("city", label="Select cities",
+                                  unique(as.character(flights$city)),
+                                  selected=NULL, multiple=TRUE)  
+                      )
+                    
+                  )
                 ),
-            column(3,
-            selectInput("direction", label=NULL,
-                        c("All directions", unique(as.character(flights$direction))),
-                        selected="All directions", multiple=FALSE),
-            selectInput("year",label=NULL,
-                        c("All years", unique(as.character(flights$year))),selected="All years", 
-                        multiple=TRUE)
-                ),
-            column(3, 
-              selectInput("selectVar", label = "Select Variable(s) :", 
-                          c("All", names(flights)), selected = "All", multiple = TRUE)
-            ),
-            column(3, ""),
-            column(3,
-                   br(), 
-                  actionButton("explorer_button", label = "SUBMIT")
-            )
-              
+                column(2,
+                  selectInput("direction", label=NULL,
+                            c("All directions", unique(as.character(flights$direction))),
+                            selected="All directions", multiple=FALSE)
+                ), 
+                column(2, 
+                  fluidRow(
+                    checkboxInput("years_checkbox", label = "All Years", value = TRUE),    
+                    conditionalPanel( 
+                      condition = "input.years_checkbox == false", 
+                      selectInput(
+                        "year",label=NULL,
+                        unique(as.character(flights$year)),
+                        selected=NULL, 
+                        multiple=TRUE
+                      )
+                    ) 
+                  )
+                  
+                ), 
+                column(2, 
+                  selectInput("selectVar", label = "Select Variable(s) :", 
+                              c("All", names(flights)), selected = "All", multiple = TRUE)
+                )
             )),
           
           mainPanel(
