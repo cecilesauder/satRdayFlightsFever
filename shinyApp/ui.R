@@ -188,13 +188,13 @@ tabPanel("Interactive map",
                 h3("By country plot"),
                 wellPanel(
                   fluidRow(
-                    column(5,
+                    column(6,
                            
                            selectInput("selectCountry", label = "Select countries to display :", 
                                        c(unique(flights$country)), selected = country5, multiple = TRUE)
                            
                     ),
-                    column(5, 
+                    column(6, 
                            
                            sliderInput("plot_slider", label = "",  
                                        min=min_date, max = max_date, 
@@ -202,10 +202,6 @@ tabPanel("Interactive map",
                                        width= "100%", timeFormat = c( "%b %Y")
                            )
                            
-                    ),
-                    column(2,
-                           br(), br(),
-                           actionButton("plot_button", label = "SUBMIT")
                     )
                   )
                 ),
