@@ -249,6 +249,7 @@ shinyServer(function(input, output, session) {
         outgoing_flights = sum(flights[direction == "Outgoing"]), 
         all_flights      = incoming_flights + outgoing_flights
         )
+    
     maxFlights <- max(data$all_flights, na.rm = TRUE)
     data <- data %>%
       mutate( radius = pmax( 4, all_flights / maxFlights * 30 ) )
@@ -269,6 +270,9 @@ shinyServer(function(input, output, session) {
                                 incoming_passengers, outgoing_passengers, all_passengers,
                                 incoming_flights, outgoing_flights, all_flights
                                 ) ) %$% popup
+    
+    print( any( grep("Lille", popups)))
+    
     leafletProxy("map") %>%
       clearShapes() %>%
       clearPopups() %>%
@@ -356,8 +360,9 @@ shinyServer(function(input, output, session) {
   
   map_table <- reactive({
     data <- dataInBounds() %>%
-      arrange( desc(passengers) ) %>%
-      select(country, city, direction, passengers, flights)
+      group_by( country, city) %>%
+      summarise( passengers = sum(passengers), flights = sum(flights)) %>%
+      arrange( desc(passengers) ) 
   })
   
   
