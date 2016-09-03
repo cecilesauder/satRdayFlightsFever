@@ -128,6 +128,17 @@ shinyServer(function(input, output, session) {
     }
   )
   
+  output$downloadPlot2 <- downloadHandler(
+    filename = function() { 
+      paste('ShinySeasonalityggPlot', '.png', sep='') 
+    },
+    content = function(file) {
+      png(file)
+      plotInput2()
+      dev.off()
+    }
+  )
+  
   plotInput <-function(){
     data <- flights %>%
       group_by(year, month) %>%
@@ -152,18 +163,23 @@ shinyServer(function(input, output, session) {
     
   })
   
-  output$seasonality_ggplot <- renderPlot({
+  plotInput2 <-function(){
     data <- flights %>%
       mutate( year = as.factor(year) ) %>%
       group_by(year, month) %>%
       summarise( passengers = sum(passengers) )
-
+    
     
     ggplot( data ) +
       aes( x = month, y = passengers, 
            group = year, color = year) +
       geom_line() + 
       geom_point()
+  }
+  
+  
+  output$seasonality_ggplot <- renderPlot({
+    print(plotInput2())
   })
   
 ############# ggvis outputs, different syntax, 2 outputs
@@ -172,11 +188,17 @@ shinyServer(function(input, output, session) {
       group_by(year, month) %>%
       summarise( passengers = sum(passengers) )
     
+    all_values <- function(x) {
+      if(is.null(x)) return(NULL)
+      paste0(names(x), ": ", format(x), collapse = "<br />")
+    }
+    
     data %>%
       ggvis( x = ~month, y = ~passengers, 
              stroke = ~year) %>% 
       layer_lines() %>%
       layer_points(fill = ~year) %>%
+      add_tooltip(all_values, "hover") %>%
       bind_shiny("ggvis", "ggvis_ui")
     
 

@@ -169,7 +169,9 @@ tabPanel("Interactive map",
                                       downloadButton('downloadPlot', 'Download plot')
                                       ),
                              tabPanel("Design 2",
-                                      plotOutput("seasonality_ggplot")),
+                                      plotOutput("seasonality_ggplot"),
+                                      downloadButton('downloadPlot2', 'Download plot')
+                                      ),
                              tabPanel("Design 3",
                                       uiOutput("ggvis_ui"),
                                       ggvisOutput("ggvis")
